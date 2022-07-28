@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app/pages/business_signup.dart';
+import 'package:app/styles/buttton.dart';
 import 'package:app/utils/validation.dart';
 
 class BusinessLoginPage extends StatefulWidget {
@@ -18,18 +19,6 @@ class BusinessLoginPage extends StatefulWidget {
 class _BusinessLoginPageState extends State<BusinessLoginPage> {
   bool _isHidden = true;
   bool _rememberChecked = false;
-
-  final ButtonStyle buttonStyle = TextButton.styleFrom(
-    backgroundColor: Colors.red,
-    fixedSize: const Size(150, 36),
-    padding: const EdgeInsets.symmetric(horizontal: 18.0),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-        topRight: Radius.circular(20.0),
-        bottomLeft: Radius.circular(20.0),
-      ),
-    ),
-  );
 
   void _togglePasswordView() {
     setState(() {
@@ -91,17 +80,26 @@ class _BusinessLoginPageState extends State<BusinessLoginPage> {
                         validator: validateEmail,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Email',
                           hintText: 'mail@domain.com',
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
+                        validator: validatePassword,
                         obscureText: _isHidden,
                         keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Password',
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -143,7 +141,7 @@ class _BusinessLoginPageState extends State<BusinessLoginPage> {
                     style: buttonStyle,
                     child: const Text(
                       "Login",
-                      style: TextStyle(fontSize: 16.0),
+                      style: TextStyle(fontSize: 20.0),
                     ),
                   ),
                 ),

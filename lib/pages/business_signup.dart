@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:app/utils/validation.dart';
 import 'package:app/pages/otp_verify.dart';
+import 'package:app/styles/buttton.dart';
 
 class BusinessSignupPage extends StatefulWidget {
   BusinessSignupPage({Key? key}) : super(key: key);
@@ -10,20 +11,19 @@ class BusinessSignupPage extends StatefulWidget {
 
   @override
   State<BusinessSignupPage> createState() => _BusinessSignupPageState();
-
-  void onSignup(BuildContext context) {
-    if (_formKey.currentState?.validate() == true) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const OtpVerifyPage()),
-        );
-    }
-  }
 }
 
 class _BusinessSignupPageState extends State<BusinessSignupPage> {
   bool _isHidden = true;
-  String? _currentSelectedValue;
+  String? _dropDownError;
+  final _fullNameInput = TextEditingController();
   final _dateInput = TextEditingController();
+  final _mobileInput = TextEditingController();
+  final _emailInput = TextEditingController();
+  final _passwordInput = TextEditingController();
+  final _confirmPasswordInput = TextEditingController();
+  final _referralCodeInput = TextEditingController();
+  String? _currentSelectedValue;
 
   final _categories = [
     "Hotel",
@@ -52,17 +52,19 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
     "Beach Resort"
   ];
 
-  final ButtonStyle buttonStyle = TextButton.styleFrom(
-    backgroundColor: Colors.red,
-    fixedSize: const Size(150, 36),
-    padding: const EdgeInsets.symmetric(horizontal: 18.0),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-        topRight: Radius.circular(20.0),
-        bottomLeft: Radius.circular(20.0),
-      ),
-    ),
-  );
+  void onSignup(BuildContext context) {
+    if (_currentSelectedValue == null) {
+      _dropDownError = 'Select a category';
+    } else {
+      _dropDownError = null;
+    }
+
+    if (widget._formKey.currentState?.validate() == true) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const OtpVerifyPage()),
+      );
+    }
+  }
 
   void _togglePasswordView() {
     setState(() {
@@ -109,13 +111,14 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                         builder: (FormFieldState<String> state) {
                           return InputDecorator(
                             decoration: InputDecoration(
+                              errorText: _dropDownError,
                               errorStyle: const TextStyle(
                                 color: Colors.redAccent,
                                 fontSize: 16.0,
                               ),
                               hintText: 'Select Category',
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
+                                borderRadius: BorderRadius.circular(20.0),
                               ),
                             ),
                             isEmpty: _currentSelectedValue == '',
@@ -130,6 +133,12 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                                     state.didChange(newValue);
                                   });
                                 },
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(20.0),
+                                ),
+                                isExpanded: true,
+                                menuMaxHeight: 400.0,
+                                alignment: AlignmentDirectional.centerStart,
                                 items: _categories.map((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
@@ -143,19 +152,30 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
+                        validator: validateFullName,
+                        controller: _fullNameInput,
                         keyboardType: TextInputType.name,
                         textCapitalization: TextCapitalization.words,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Full Name',
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
+                        validator: validateDateOfBirth,
                         controller: _dateInput,
                         keyboardType: TextInputType.datetime,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           suffixIcon: Icon(Icons.calendar_today),
                           labelText: "Date Of Birth",
                         ),
@@ -175,28 +195,45 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
+                        controller: _mobileInput,
+                        validator: validateMobile,
                         keyboardType: TextInputType.phone,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Mobile',
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
+                        controller: _emailInput,
                         validator: validateEmail,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Email',
                           hintText: 'mail@domain.com',
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
+                        validator: validatePassword,
+                        controller: _passwordInput,
                         obscureText: _isHidden,
                         keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Password',
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -210,10 +247,19 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
+                        validator: (value) => validateConfirmPassword(
+                          value,
+                          _passwordInput.text,
+                        ),
+                        controller: _confirmPasswordInput,
                         obscureText: _isHidden,
                         keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Confirm Password',
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -227,9 +273,14 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
+                        controller: _referralCodeInput,
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Referral Code',
                         ),
                       ),
@@ -239,11 +290,11 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                 const Padding(padding: EdgeInsets.all(8.0)),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () => widget.onSignup(context),
+                    onPressed: () => onSignup(context),
                     style: buttonStyle,
                     child: const Text(
                       "Sign Up",
-                      style: TextStyle(fontSize: 16.0),
+                      style: TextStyle(fontSize: 20.0),
                     ),
                   ),
                 ),
