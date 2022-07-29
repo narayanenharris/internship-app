@@ -2,6 +2,7 @@ import 'package:app/pages/otp_verify.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:app/utils/validation.dart';
+import 'package:app/styles/buttton.dart';
 
 class MemberSignupPage extends StatefulWidget {
   MemberSignupPage({Key? key}) : super(key: key);
@@ -29,18 +30,6 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
       );
     }
   }
-
-  final ButtonStyle buttonStyle = TextButton.styleFrom(
-    backgroundColor: Colors.red,
-    fixedSize: const Size(150, 36),
-    padding: const EdgeInsets.symmetric(horizontal: 18.0),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-        topRight: Radius.circular(20.0),
-        bottomLeft: Radius.circular(20.0),
-      ),
-    ),
-  );
 
   void _togglePasswordView() {
     setState(() {
@@ -84,20 +73,30 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                   child: Column(
                     children: [
                       TextFormField(
+                        validator: validateFullName,
                         controller: _fullNameInput,
                         keyboardType: TextInputType.name,
                         textCapitalization: TextCapitalization.words,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Full Name',
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
+                        validator: validateDateOfBirth,
                         controller: _dateInput,
                         keyboardType: TextInputType.datetime,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           suffixIcon: Icon(Icons.calendar_today),
                           labelText: "Date Of Birth",
                         ),
@@ -117,10 +116,15 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
+                        validator: validateMobile,
                         controller: _mobileInput,
                         keyboardType: TextInputType.phone,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Mobile',
                         ),
                       ),
@@ -130,18 +134,27 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                         validator: validateEmail,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Email',
                           hintText: 'mail@domain.com',
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
+                        validator: validatePassword,
                         controller: _passwordInput,
                         obscureText: _isHidden,
                         keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Password',
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -157,11 +170,19 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                         padding: EdgeInsets.all(8.0),
                       ),
                       TextFormField(
+                        validator: (value) => validateConfirmPassword(
+                          value,
+                          _passwordInput.text,
+                        ),
                         controller: _confirmPasswordInput,
                         obscureText: _isHidden,
                         keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Confirm Password',
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -178,7 +199,11 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                         controller: _referralCodeInput,
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20.0),
+                            ),
+                          ),
                           labelText: 'Referral Code',
                         ),
                       ),
@@ -192,7 +217,7 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                     style: buttonStyle,
                     child: const Text(
                       "Sign Up",
-                      style: TextStyle(fontSize: 16.0),
+                      style: TextStyle(fontSize: 20.0),
                     ),
                   ),
                 ),
