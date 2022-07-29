@@ -10,25 +10,6 @@ class MemberLoginPage extends StatefulWidget {
 
   @override
   State<MemberLoginPage> createState() => _MemberLoginPageState();
-
-  String? validateEmail(String? value) {
-    String pattern =
-        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-        r"{0,253}[a-zA-Z0-9])?)*$";
-
-    RegExp regex = RegExp(pattern);
-
-    if (value == null || value.isEmpty || !regex.hasMatch(value)) {
-      return 'Enter a valid email address';
-    } else {
-      return null;
-    }
-  }
-
-  void onLogin() {
-    _formKey.currentState?.validate();
-  }
 }
 
 class _MemberLoginPageState extends State<MemberLoginPage> {
@@ -45,6 +26,10 @@ class _MemberLoginPageState extends State<MemberLoginPage> {
     setState(() {
       _rememberChecked = value ?? false;
     });
+  }
+
+  void _onLogin() {
+    widget._formKey.currentState?.validate();
   }
 
   void _onSignUpPress(BuildContext context) {
@@ -92,7 +77,7 @@ class _MemberLoginPageState extends State<MemberLoginPage> {
                   child: Column(
                     children: [
                       TextFormField(
-                        validator: widget.validateEmail,
+                        validator: validateEmail,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(
@@ -152,7 +137,7 @@ class _MemberLoginPageState extends State<MemberLoginPage> {
                 const Padding(padding: EdgeInsets.all(8.0)),
                 Center(
                   child: ElevatedButton(
-                    onPressed: widget.onLogin,
+                    onPressed: _onLogin,
                     style: buttonStyle,
                     child: const Text(
                       "Login",

@@ -10,10 +10,6 @@ class BusinessLoginPage extends StatefulWidget {
 
   @override
   State<BusinessLoginPage> createState() => _BusinessLoginPageState();
-
-  void _onLogin() {
-    _formKey.currentState?.validate();
-  }
 }
 
 class _BusinessLoginPageState extends State<BusinessLoginPage> {
@@ -30,6 +26,10 @@ class _BusinessLoginPageState extends State<BusinessLoginPage> {
     setState(() {
       _rememberChecked = value ?? false;
     });
+  }
+
+  void _onLogin() {
+    if (widget._formKey.currentState?.validate() == true) {}
   }
 
   void _onSignUpPress(BuildContext context) {
@@ -137,7 +137,7 @@ class _BusinessLoginPageState extends State<BusinessLoginPage> {
                 const Padding(padding: EdgeInsets.all(8.0)),
                 Center(
                   child: ElevatedButton(
-                    onPressed: widget._onLogin,
+                    onPressed: _onLogin,
                     style: buttonStyle,
                     child: const Text(
                       "Login",
