@@ -47,7 +47,7 @@ String? validatePassword(String? value) {
 String? validateConfirmPassword(String? value, String? password) {
   if (value == null || value.length < 6) {
     return 'Password should be atleast 6 characters long';
-  } else if (value == password) {
+  } else if (value != password) {
     return 'Confirm password should be same as password';
   } else {
     return null;

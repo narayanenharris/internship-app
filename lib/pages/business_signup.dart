@@ -53,11 +53,13 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
   ];
 
   void onSignup(BuildContext context) {
-    if (_currentSelectedValue == null) {
-      _dropDownError = 'Select a category';
-    } else {
-      _dropDownError = null;
-    }
+    setState(() {
+      if (_currentSelectedValue == null) {
+        _dropDownError = 'Select a category';
+      } else {
+        _dropDownError = null;
+      }
+    });
 
     if (widget._formKey.currentState?.validate() == true) {
       Navigator.of(context).push(
@@ -112,10 +114,6 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                           return InputDecorator(
                             decoration: InputDecoration(
                               errorText: _dropDownError,
-                              errorStyle: const TextStyle(
-                                color: Colors.redAccent,
-                                fontSize: 16.0,
-                              ),
                               hintText: 'Select Category',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20.0),
