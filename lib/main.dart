@@ -1,3 +1,5 @@
+import 'package:app/splash_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:app/pages/welcome_page.dart';
 import 'package:app/pages/member_login.dart';
@@ -21,6 +23,7 @@ class MyApp extends StatelessWidget {
       initialRoute: 'welcome',
       theme: ThemeData(primaryColor: Colors.red),
       debugShowCheckedModeBanner: false,
+      home: SplashScreen(),
       routes: {
         'welcome': (context) => WelcomePage(),
         'member-login': (context) => MemberLoginPage(),
