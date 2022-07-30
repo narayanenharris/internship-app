@@ -1,3 +1,4 @@
+import 'package:sms_autofill/sms_autofill.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:app/utils/validation.dart';
@@ -15,6 +16,7 @@ class BusinessSignupPage extends StatefulWidget {
 
 class _BusinessSignupPageState extends State<BusinessSignupPage> {
   bool _isHidden = true;
+  String? _mobileError;
   String? _dropDownError;
   final _fullNameInput = TextEditingController();
   final _dateInput = TextEditingController();
@@ -52,13 +54,15 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
     "Beach Resort"
   ];
 
-  void onSignup(BuildContext context) {
+  void onSignup(BuildContext context) async {
     setState(() {
       if (_currentSelectedValue == null) {
         _dropDownError = 'Select a category';
       } else {
         _dropDownError = null;
       }
+
+      _mobileError = validateMobile(_mobileInput.text);
     });
 
     if (widget._formKey.currentState?.validate() == true) {
@@ -66,6 +70,8 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
         MaterialPageRoute(builder: (context) => const OtpVerifyPage()),
       );
     }
+
+    await SmsAutoFill().listenForCode();
   }
 
   void _togglePasswordView() {
@@ -154,13 +160,23 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                         controller: _fullNameInput,
                         keyboardType: TextInputType.name,
                         textCapitalization: TextCapitalization.words,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
                           ),
                           labelText: 'Full Name',
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
@@ -168,14 +184,27 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                         validator: validateDateOfBirth,
                         controller: _dateInput,
                         keyboardType: TextInputType.datetime,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
                           ),
-                          suffixIcon: Icon(Icons.calendar_today),
+                          suffixIcon: const Icon(
+                            Icons.calendar_today,
+                            color: Colors.black54,
+                          ),
                           labelText: "Date Of Birth",
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                          ),
                         ),
                         readOnly: true,
                         onTap: () async {
@@ -184,6 +213,23 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                             initialDate: DateTime.now(),
                             firstDate: DateTime(1950),
                             lastDate: DateTime(2100),
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: const ColorScheme.light(
+                                    primary: Color.fromARGB(255, 255, 0, 0),
+                                    onPrimary: Colors.white,
+                                    onSurface: Colors.black,
+                                  ),
+                                  textButtonTheme: TextButtonThemeData(
+                                    style: TextButton.styleFrom(
+                                      primary: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                                child: child!,
+                              );
+                            },
                           );
 
                           if (pickedDate != null) {
@@ -192,17 +238,26 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                         },
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
-                      TextFormField(
+                      PhoneFieldHint(
                         controller: _mobileInput,
-                        validator: validateMobile,
-                        keyboardType: TextInputType.phone,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
                           ),
                           labelText: 'Mobile',
+                          errorText: _mobileError,
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
@@ -210,14 +265,24 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                         controller: _emailInput,
                         validator: validateEmail,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
                           ),
                           labelText: 'Email',
                           hintText: 'mail@domain.com',
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
@@ -238,8 +303,19 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                               _isHidden
                                   ? Icons.visibility
                                   : Icons.visibility_off,
+                              color: Colors.black54,
                             ),
                             onPressed: _togglePasswordView,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
                           ),
                         ),
                       ),
@@ -264,8 +340,19 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                               _isHidden
                                   ? Icons.visibility
                                   : Icons.visibility_off,
+                              color: Colors.black54,
                             ),
                             onPressed: _togglePasswordView,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
                           ),
                         ),
                       ),
@@ -273,13 +360,23 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                       TextFormField(
                         controller: _referralCodeInput,
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
                           ),
                           labelText: 'Referral Code',
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                     ],
@@ -305,7 +402,8 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                     ),
                     TextButton(
                       onPressed: () => _onLoginPress(context),
-                      style: TextButton.styleFrom(primary: Colors.red),
+                      style: TextButton.styleFrom(
+                          primary: const Color.fromARGB(255, 255, 0, 0)),
                       child: const Text(
                         "Login",
                         style: TextStyle(fontSize: 16.0),

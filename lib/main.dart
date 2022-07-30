@@ -1,6 +1,5 @@
-import 'package:app/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+import 'package:app/pages/splash_screen.dart';
 import 'package:app/pages/welcome_page.dart';
 import 'package:app/pages/member_login.dart';
 import 'package:app/pages/member_signup.dart';
@@ -20,12 +19,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'App',
-      initialRoute: 'welcome',
-      theme: ThemeData(primaryColor: Colors.red),
+      theme: ThemeData(
+        primaryColor: const Color.fromARGB(255, 255, 0, 0),
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Color.fromARGB(255, 255, 0, 0),
+        ),
+      ),
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: const HomePage(),
       routes: {
-        'welcome': (context) => WelcomePage(),
+        'welcome': (context) => const WelcomePage(),
         'member-login': (context) => MemberLoginPage(),
         'member-register': (context) => MemberSignupPage(),
         'business-login': (context) => BusinessLoginPage(),

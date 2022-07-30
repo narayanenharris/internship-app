@@ -11,7 +11,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.red,
+      backgroundColor: const Color.fromARGB(255, 255, 0, 0),
       child: ListView(
         children: [
           Padding(
@@ -51,47 +51,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.home),
-            iconColor: Colors.white,
-            onTap: () {},
-            title: const Text(
-              'Home',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          ListTile(
             leading: const Icon(Icons.query_stats),
             iconColor: Colors.white,
             onTap: () {},
             title: const Text(
               'Dashboard',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.book),
-            iconColor: Colors.white,
-            onTap: () {},
-            title: const Text(
-              'Bookings',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.wallet),
-            iconColor: Colors.white,
-            onTap: () {},
-            title: const Text(
-              'My Wallet',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.notifications),
-            iconColor: Colors.white,
-            onTap: () {},
-            title: const Text(
-              'Notifications',
               style: TextStyle(color: Colors.white),
             ),
           ),

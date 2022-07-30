@@ -79,14 +79,24 @@ class _BusinessLoginPageState extends State<BusinessLoginPage> {
                       TextFormField(
                         validator: validateEmail,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
                           ),
                           labelText: 'Email',
                           hintText: 'mail@domain.com',
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
@@ -106,8 +116,19 @@ class _BusinessLoginPageState extends State<BusinessLoginPage> {
                               _isHidden
                                   ? Icons.visibility
                                   : Icons.visibility_off,
+                                  color: Colors.black54
                             ),
                             onPressed: _togglePasswordView,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
                           ),
                         ),
                       ),
@@ -122,14 +143,15 @@ class _BusinessLoginPageState extends State<BusinessLoginPage> {
                         Checkbox(
                           value: _rememberChecked,
                           onChanged: (value) => _setRemember(value),
-                          activeColor: Colors.red,
+                          activeColor: const Color.fromARGB(255, 255, 0, 0),
                         ),
                         const Text("Remember Me")
                       ],
                     ),
                     TextButton(
                       onPressed: () {},
-                      style: TextButton.styleFrom(primary: Colors.red),
+                      style: TextButton.styleFrom(
+                          primary: const Color.fromARGB(255, 255, 0, 0)),
                       child: const Text("Forgot Password"),
                     )
                   ],
@@ -154,7 +176,8 @@ class _BusinessLoginPageState extends State<BusinessLoginPage> {
                     ),
                     TextButton(
                       onPressed: () => _onSignUpPress(context),
-                      style: TextButton.styleFrom(primary: Colors.red),
+                      style: TextButton.styleFrom(
+                          primary: const Color.fromARGB(255, 255, 0, 0)),
                       child: const Text(
                         "Register",
                         style: TextStyle(fontSize: 16.0),

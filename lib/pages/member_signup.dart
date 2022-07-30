@@ -1,3 +1,4 @@
+import 'package:sms_autofill/sms_autofill.dart';
 import 'package:app/pages/otp_verify.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +16,7 @@ class MemberSignupPage extends StatefulWidget {
 
 class _MemberSignupPageState extends State<MemberSignupPage> {
   bool _isHidden = true;
+  String? _mobileError;
   final _fullNameInput = TextEditingController();
   final _dateInput = TextEditingController();
   final _mobileInput = TextEditingController();
@@ -23,11 +25,17 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
   final _confirmPasswordInput = TextEditingController();
   final _referralCodeInput = TextEditingController();
 
-  void onSignup(BuildContext context) {
+  void onSignup(BuildContext context) async {
+    setState(() {
+      _mobileError = validateMobile(_mobileInput.text);
+    });
+
     if (widget._formKey.currentState?.validate() == true) {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const OtpVerifyPage()),
       );
+
+      await SmsAutoFill().listenForCode();
     }
   }
 
@@ -77,13 +85,23 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                         controller: _fullNameInput,
                         keyboardType: TextInputType.name,
                         textCapitalization: TextCapitalization.words,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
                           ),
                           labelText: 'Full Name',
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
@@ -91,14 +109,27 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                         validator: validateDateOfBirth,
                         controller: _dateInput,
                         keyboardType: TextInputType.datetime,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
                           ),
-                          suffixIcon: Icon(Icons.calendar_today),
+                          suffixIcon: const Icon(
+                            Icons.calendar_today,
+                            color: Colors.black54,
+                          ),
                           labelText: "Date Of Birth",
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                          ),
                         ),
                         readOnly: true,
                         onTap: () async {
@@ -107,6 +138,23 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                             initialDate: DateTime.now(),
                             firstDate: DateTime(1950),
                             lastDate: DateTime(2100),
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: const ColorScheme.light(
+                                    primary: Color.fromARGB(255, 255, 0, 0),
+                                    onPrimary: Colors.white,
+                                    onSurface: Colors.black,
+                                  ),
+                                  textButtonTheme: TextButtonThemeData(
+                                    style: TextButton.styleFrom(
+                                      primary: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                                child: child!,
+                              );
+                            },
                           );
 
                           if (pickedDate != null) {
@@ -115,17 +163,26 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                         },
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
-                      TextFormField(
-                        validator: validateMobile,
+                      PhoneFieldHint(
                         controller: _mobileInput,
-                        keyboardType: TextInputType.phone,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
                           ),
                           labelText: 'Mobile',
+                          errorText: _mobileError,
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
@@ -133,14 +190,24 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                         controller: _emailInput,
                         validator: validateEmail,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
                           ),
                           labelText: 'Email',
                           hintText: 'mail@domain.com',
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                       const Padding(padding: EdgeInsets.all(8.0)),
@@ -161,8 +228,19 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                               _isHidden
                                   ? Icons.visibility
                                   : Icons.visibility_off,
+                              color: Colors.black54,
                             ),
                             onPressed: _togglePasswordView,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
                           ),
                         ),
                       ),
@@ -189,8 +267,19 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                               _isHidden
                                   ? Icons.visibility
                                   : Icons.visibility_off,
+                              color: Colors.black54,
                             ),
                             onPressed: _togglePasswordView,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
                           ),
                         ),
                       ),
@@ -198,13 +287,23 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                       TextFormField(
                         controller: _referralCodeInput,
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
                             ),
                           ),
                           labelText: 'Referral Code',
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black87,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                     ],
@@ -230,7 +329,8 @@ class _MemberSignupPageState extends State<MemberSignupPage> {
                     ),
                     TextButton(
                       onPressed: () => _onLoginPress(context),
-                      style: TextButton.styleFrom(primary: Colors.red),
+                      style: TextButton.styleFrom(
+                          primary: const Color.fromARGB(255, 255, 0, 0)),
                       child: const Text(
                         "Login",
                         style: TextStyle(fontSize: 16.0),
