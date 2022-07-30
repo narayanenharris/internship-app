@@ -15,6 +15,11 @@ dependencies:
   intl: ^0.17.0
   simple_animations: ^3.0.0
   flutter_native_splash: ^2.2.6
+  firebase_core: ^1.20.0
+  firebase_auth: ^3.6.1
+  google_fonts: ^3.0.1
+  pin_code_fields: ^7.4.0
+  intl_phone_field: ^3.1.0
 
 
 dev_dependencies:
