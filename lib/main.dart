@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:app/pages/splash_screen.dart';
 import 'package:app/pages/welcome_page.dart';
 import 'package:app/pages/member_login.dart';
 import 'package:app/pages/member_signup.dart';
@@ -7,8 +6,12 @@ import 'package:app/pages/business_login.dart';
 import 'package:app/pages/business_signup.dart';
 import 'package:app/pages/otp_verify.dart';
 import 'package:app/pages/home.dart';
+import 'package:app/pages/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -36,6 +39,9 @@ class MyApp extends StatelessWidget {
         'otp': (context) => const OtpVerifyPage(),
         'home': (context) => const HomePage()
       },
+      initialRoute: 'welcome',
+      debugShowCheckedModeBanner: false,
+      home: SplashScreen(),
     );
   }
 }
