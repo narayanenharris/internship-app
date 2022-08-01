@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:app/pages/member_signup.dart';
 import 'package:app/styles/buttton.dart';
 import 'package:app/utils/validation.dart';
@@ -16,6 +17,9 @@ class _MemberLoginPageState extends State<MemberLoginPage> {
   bool _isHidden = true;
   bool _rememberChecked = false;
 
+  final _emailInput = TextEditingController();
+  final _passwordInput = TextEditingController();
+
   void _togglePasswordView() {
     setState(() {
       _isHidden = !_isHidden;
@@ -28,13 +32,35 @@ class _MemberLoginPageState extends State<MemberLoginPage> {
     });
   }
 
-  void _onLogin() {
-    widget._formKey.currentState?.validate();
+  void _onLogin() async {
+    if (widget._formKey.currentState?.validate() == true) {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailInput.text,
+        password: _passwordInput.text,
+      );
+    }
+  }
+
+  void _onForgotPassword() {
+    if (_emailInput.text.isNotEmpty) {
+      FirebaseAuth.instance.sendPasswordResetEmail(email: _emailInput.text);
+      showSnackBarText('Reset link sent to your email');
+    } else {
+      showSnackBarText('Enter email to send reset link');
+    }
   }
 
   void _onSignUpPress(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => MemberSignupPage()),
+    );
+  }
+
+  void showSnackBarText(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+      ),
     );
   }
 
@@ -78,6 +104,7 @@ class _MemberLoginPageState extends State<MemberLoginPage> {
                     children: [
                       TextFormField(
                         validator: validateEmail,
+                        controller: _emailInput,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(
@@ -103,6 +130,7 @@ class _MemberLoginPageState extends State<MemberLoginPage> {
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
                         validator: validatePassword,
+                        controller: _passwordInput,
                         obscureText: _isHidden,
                         keyboardType: TextInputType.visiblePassword,
                         decoration: InputDecoration(
@@ -136,6 +164,9 @@ class _MemberLoginPageState extends State<MemberLoginPage> {
                     ],
                   ),
                 ),
+                const Padding(
+                  padding: EdgeInsets.all(4.0),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -150,9 +181,10 @@ class _MemberLoginPageState extends State<MemberLoginPage> {
                       ],
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: _onForgotPassword,
                       style: TextButton.styleFrom(
-                          primary: const Color.fromARGB(255, 255, 0, 0)),
+                        primary: const Color.fromARGB(255, 255, 0, 0),
+                      ),
                       child: const Text("Forgot Password"),
                     )
                   ],

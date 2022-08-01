@@ -1,11 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:app/pages/welcome_page.dart';
-import 'package:app/pages/member_login.dart';
-import 'package:app/pages/member_signup.dart';
-import 'package:app/pages/business_login.dart';
-import 'package:app/pages/business_signup.dart';
-import 'package:app/pages/otp_verify.dart';
-import 'package:app/pages/home.dart';
 import 'package:app/pages/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -29,19 +22,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: const HomePage(),
-      routes: {
-        'welcome': (context) => const WelcomePage(),
-        'member-login': (context) => MemberLoginPage(),
-        'member-register': (context) => MemberSignupPage(),
-        'business-login': (context) => BusinessLoginPage(),
-        'business-register': (context) => BusinessSignupPage(),
-        'otp': (context) => const OtpVerifyPage(),
-        'home': (context) => const HomePage()
-      },
-      initialRoute: 'welcome',
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: const SplashScreen(),
     );
   }
 }

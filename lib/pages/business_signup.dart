@@ -1,4 +1,5 @@
 import 'package:sms_autofill/sms_autofill.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:app/utils/validation.dart';
@@ -19,7 +20,7 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
   String? _mobileError;
   String? _dropDownError;
   final _fullNameInput = TextEditingController();
-  final _dateInput = TextEditingController();
+  final _dateOfBirthInput = TextEditingController();
   final _mobileInput = TextEditingController();
   final _emailInput = TextEditingController();
   final _passwordInput = TextEditingController();
@@ -65,13 +66,41 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
       _mobileError = validateMobile(_mobileInput.text);
     });
 
-    if (widget._formKey.currentState?.validate() == true) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const OtpVerifyPage()),
-      );
+    if (_dropDownError != null || _mobileError != null) {
+      return;
     }
 
-    await SmsAutoFill().listenForCode();
+    if (widget._formKey.currentState?.validate() == true) {
+      UserCredential? user;
+
+      try {
+        user = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailInput.text,
+          password: _passwordInput.text,
+        );
+
+        await user.user?.updateDisplayName(_fullNameInput.text);
+      } catch (error) {
+        user = null;
+        showSnackBarText(error.toString());
+      }
+
+      if (!mounted || user == null) return;
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => OtpVerifyPage(
+            fullName: _fullNameInput.text,
+            dateOfBirth: _dateOfBirthInput.text,
+            email: _emailInput.text,
+            mobile: _mobileInput.text,
+            password: _passwordInput.text,
+            referralCode: _referralCodeInput.text,
+            user: user!,
+          ),
+        ),
+      );
+    }
   }
 
   void _togglePasswordView() {
@@ -82,7 +111,7 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
 
   void _setDateInput(DateTime dateTime) {
     setState(() {
-      _dateInput.text = DateFormat('dd-MM-yyyy').format(dateTime);
+      _dateOfBirthInput.text = DateFormat('dd-MM-yyyy').format(dateTime);
     });
   }
 
@@ -182,7 +211,7 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                       const Padding(padding: EdgeInsets.all(8.0)),
                       TextFormField(
                         validator: validateDateOfBirth,
-                        controller: _dateInput,
+                        controller: _dateOfBirthInput,
                         keyboardType: TextInputType.datetime,
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(
@@ -231,7 +260,6 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                               );
                             },
                           );
-
                           if (pickedDate != null) {
                             _setDateInput(pickedDate);
                           }
@@ -241,6 +269,7 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                       PhoneFieldHint(
                         controller: _mobileInput,
                         decoration: InputDecoration(
+                          prefixText: "+91",
                           border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(20.0),
@@ -403,7 +432,8 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
                     TextButton(
                       onPressed: () => _onLoginPress(context),
                       style: TextButton.styleFrom(
-                          primary: const Color.fromARGB(255, 255, 0, 0)),
+                        primary: const Color.fromARGB(255, 255, 0, 0),
+                      ),
                       child: const Text(
                         "Login",
                         style: TextStyle(fontSize: 16.0),
@@ -415,6 +445,26 @@ class _BusinessSignupPageState extends State<BusinessSignupPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _fullNameInput.dispose();
+    _emailInput.dispose();
+    _mobileInput.dispose();
+    _passwordInput.dispose();
+    _confirmPasswordInput.dispose();
+    _dateOfBirthInput.dispose();
+    _referralCodeInput.dispose();
+    super.dispose();
+  }
+
+  void showSnackBarText(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
       ),
     );
   }

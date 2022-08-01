@@ -5,6 +5,24 @@ import 'package:app/pages/business_login.dart';
 class WelcomePage extends StatelessWidget {
   const WelcomePage({Key? key}) : super(key: key);
 
+  void _onMemberLogin(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MemberLoginPage(),
+      ),
+    );
+  }
+
+  void _onBusinessLogin(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BusinessLoginPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,14 +51,7 @@ class WelcomePage extends StatelessWidget {
                     MaterialButton(
                       minWidth: double.infinity,
                       height: 60,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MemberLoginPage(),
-                          ),
-                        );
-                      },
+                      onPressed: () => _onMemberLogin(context),
                       // defining the shape
                       shape: RoundedRectangleBorder(
                         side: const BorderSide(color: Colors.black),
@@ -59,20 +70,8 @@ class WelcomePage extends StatelessWidget {
                     MaterialButton(
                       minWidth: double.infinity,
                       height: 60,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BusinessLoginPage(),
-                          ),
-                        );
-                      },
-                      color: const Color.fromARGB(
-                        255,
-                        255,
-                        0,
-                        0,
-                      ),
+                      onPressed: () => _onBusinessLogin(context),
+                      color: const Color.fromARGB(255, 255, 0, 0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
