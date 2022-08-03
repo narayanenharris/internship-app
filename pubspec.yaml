@@ -24,6 +24,14 @@ dependencies:
   google_fonts: ^3.0.1
   pin_code_fields: ^7.4.0
   intl_phone_field: ^3.1.0
+  flutter_spinwheel: ^0.1.0
+  flutter_fortune_wheel: ^1.2.0
+  basic_utils: ^4.5.0
+  flutter_spinning_wheel: ^1.1.0
+  rxdart: ^0.27.5
+  vertical_card_pager: ^1.5.0
+  font_awesome_flutter: ^10.1.0
+  dio: ^4.0.6
 
 dev_dependencies:
   flutter_test:
