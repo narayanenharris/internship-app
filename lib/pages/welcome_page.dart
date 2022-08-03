@@ -46,16 +46,20 @@ class WelcomePage extends StatelessWidget {
                   padding: EdgeInsets.all(25.0),
                 ),
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    Align(
+                      alignment: Alignment.center,
+                    ),
                     // the login button
                     MaterialButton(
-                      minWidth: double.infinity,
+                      minWidth: 250.0,
                       height: 60,
                       onPressed: () => _onMemberLogin(context),
                       // defining the shape
                       shape: RoundedRectangleBorder(
                         side: const BorderSide(color: Colors.black),
-                        borderRadius: BorderRadius.circular(50),
+                        borderRadius: BorderRadius.circular(30),
                       ),
                       child: const Text(
                         "Member",
@@ -68,12 +72,12 @@ class WelcomePage extends StatelessWidget {
                     // creating the signup button
                     const SizedBox(height: 20),
                     MaterialButton(
-                      minWidth: double.infinity,
+                      minWidth: 250.0,
                       height: 60,
                       onPressed: () => _onBusinessLogin(context),
                       color: const Color.fromARGB(255, 255, 0, 0),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
+                        borderRadius: BorderRadius.circular(30),
                       ),
                       child: const Text(
                         "Business",
@@ -83,7 +87,7 @@ class WelcomePage extends StatelessWidget {
                           fontSize: 18,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 )
               ],
